@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <title>Список студентів</title>
+</head>
+<body>
+    <div id="app">
+        <input type="text" v-model="search" placeholder="Пошук за прізвищем">
+        <table>
+            <thead>
+                <tr>
+                    <th>ПІБ</th>
+                    <th>Група</th>
+                    <th>Рік народження</th>
+                    <th>Практика</th>
+                    <th>Дії</th>
+                </tr>
+            </thead>
+            <tbody>
+              <tr v-for="student in filteredStudents" :key="student.id">
+                <td><span :class="{ 'highlighted-text': student.highlighted }">{{ student.name }}</span></td>
+                <td><span :class="{ 'highlighted-text': student.highlighted }">{{ student.group }}</span></td>
+                <td>{{ student.birthYear }}</td>
+                <td>
+                    <input type="checkbox" v-model="student.passed">
+                </td>
+                <td>
+                    <a @click="removeStudent(student.id)" href="#">Видалити</a>
+                </td>
+            </tr>
+            
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        new Vue({
+            el: '#app',
+            data: {
+                students: [
+                { id: 1, name: 'Найда Ладолюб Тарасович', group: 'РПЗ 20 2/9', birthYear: 1995, passedPractical: true },
+                    { id: 2, name: 'Каплун Фрол Тимурович', group: 'РПЗ 20 1/9', birthYear: 1997, passedPractical: false },
+                    { id: 3, name: 'Сторож Яровид Богуславович', group: 'РПЗ 20 2/9', birthYear: 1996, passedPractical: true },
+                    { id: 4, name: 'Бузинний Шушана Ігорівна', group: 'РПЗ 20 2/9', birthYear: 1998, passedPractical: true },
+                    { id: 5, name: 'Мусієнко Тава Панасівна', group: 'РПЗ 20 1/9', birthYear: 1999, passedPractical: false },
+                    { id: 6, name: 'Січинська Єкатерина Герасимівна', group: 'РПЗ 20 2/9', birthYear: 1997, passedPractical: true },
+                    { id: 7, name: 'Шиян Лукреція Романівна', group: 'РПЗ 20 1/9', birthYear: 1994, passedPractical: true },
+                ],
+                search: ''
+            },
+            computed: {
+                filteredStudents() {
+                    const searchTerm = this.search.toLowerCase();
+                    return this.students.map(student => {
+                        const highlighted = searchTerm && student.name.toLowerCase().includes(searchTerm);
+                        return { ...student, highlighted };
+                    });
+                }
+            },
+            methods: {
+                removeStudent(id) {
+                    const index = this.students.findIndex(student => student.id === id);
+                    if (index !== -1) {
+                        this.students.splice(index, 1);
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
